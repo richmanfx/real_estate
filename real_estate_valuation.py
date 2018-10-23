@@ -22,7 +22,20 @@ def main():
     # Вывод постоянных пораметров из конфигурационного файла
     if config.PRINT_CONFIG_FLAG:
         print '\n-------------------------------------------------'
+
+        print "Средняя стоимость аренды в месяц: {0} руб".format(config.AVERAGE_RENTAL)
+        print "Количество доходных месяцев в году: {0}".format(config.PROFIT_MONTHS)
+        print "Стоимость предварительного ремонта за 1 кв.м.: {0}".format(config.REPAIR)
+
+        print "Стоимость регистрации договора: {0} руб".format(config.CONTRACT_REGISTRATION)
+        print "Мелкие расходы на запуск объекта: {0} руб".format(config.RUNNING_COST)
+
         print "Стоимость отопления в месяц: {0} руб".format(config.HEATING)
+        print "Обслуживание ЖЭКом в месяц: {0} руб".format(config.HOUSING_OFFICE)
+        print "Минимальная страховка за 1 кв.м. в месяц: {0} руб".format(config.MIN_INSURANCE)
+        print "Бухгалтерское обслуживание в месяц: {0} руб".format(config.ACCOUNTING_SERVICE)
+
+        print "Требуемый коэффициент доходности: {0}".format(config.REQUIRED_PROFIT_MARGIN)
 
     #################################################################################
     print '\n-------------------------------------------------'
