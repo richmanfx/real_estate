@@ -33,7 +33,7 @@ def main():
 
         print "Стоимость отопления в месяц за 1 кв.м.: {0:.2f} руб".format(config.HEATING)
         print "Обслуживание ЖЭКом в месяц: {0:.2f} руб".format(config.HOUSING_OFFICE)
-        print "Минимальная страховка за 1 кв.м. в месяц: {0:.2f} руб".format(config.MIN_INSURANCE)
+        # print "Минимальная страховка за 1 кв.м. в месяц: {0:.2f} руб".format(config.MIN_INSURANCE)
         print "Бухгалтерское обслуживание в месяц: {0:.2f} руб".format(config.ACCOUNTING_SERVICE)
 
         print "Требуемый коэффициент доходности: {0}".format(config.REQUIRED_PROFIT_MARGIN)
@@ -42,7 +42,23 @@ def main():
     # *** Расчёт неосновных параметров ***
 
     # Страховка всей площади в месяц, руб
-    month_all_area_insurance = building_area * config.MIN_INSURANCE
+    # month_all_area_insurance = building_area * config.MIN_INSURANCE
+
+    # Страховка всей площади в год, руб
+    year_all_area_insurance = 0
+    if 0 < building_area < 100:
+        year_all_area_insurance = config.YEARLY_INSURANCE[100]
+    elif 100 <= building_area < 300:
+        year_all_area_insurance = config.YEARLY_INSURANCE[300]
+    elif 300 <= building_area < 500:
+        year_all_area_insurance = config.YEARLY_INSURANCE[500]
+    elif 500 <= building_area < 1000:
+        year_all_area_insurance = config.YEARLY_INSURANCE[1000]
+    elif 1000 <= building_area:
+        year_all_area_insurance = config.YEARLY_INSURANCE[99999999]
+    else:
+        print Fore.RED + "Неудачная площадь: '{0}' кв.м. => неудачная сумма годовой страховки".format(building_area)
+        exit(1)
 
     # Стоимость отопления в месяц, руб
     month_heating = config.HEATING * building_area
@@ -52,7 +68,8 @@ def main():
 
     if config.OPTIONAL_CALCULATED_PARAMETERS_PRINT:
         print '\n-------------------------------------------------'
-        print('Страховка в месяц всей площади: {0:.2f} руб/мес'.format(month_all_area_insurance))
+        # print('Страховка в месяц всей площади: {0:.2f} руб/мес'.format(month_all_area_insurance))
+        print('Страховка в год всей площади: {0:.2f} руб/год'.format(year_all_area_insurance))
         print('Отопление в месяц всей площади: {0:.2f} руб/мес'.format(month_heating))
         print('Обслуживание ЖЭКом в месяц всей площади: {0:.2f} руб/мес'.format(month_housing_office))
 
@@ -66,9 +83,9 @@ def main():
     month_rental_payout = rent_rights_cost / 12
 
     # Расходы в месяц
+    # month_all_area_insurance + \
     month_payout = \
         month_rental_payout + \
-        month_all_area_insurance + \
         month_heating + \
         month_housing_office + \
         config.ACCOUNTING_SERVICE + \
@@ -78,7 +95,8 @@ def main():
     year_rental_income = building_area * config.AVERAGE_RENTAL * config.PROFIT_MONTHS
 
     # Коэффициент доходности
-    profit_margin = (year_rental_income - month_payout * 12) / (config.CONTRACT_REGISTRATION + config.RUNNING_COST)
+    profit_margin = (year_rental_income - month_payout * 12 + year_all_area_insurance) / \
+                    (config.CONTRACT_REGISTRATION + config.RUNNING_COST)
 
     # Безубыточность сдачи, руб/кв.м. в месяц
     loss_free_rent = ((month_payout * 12) / 10) / building_area
